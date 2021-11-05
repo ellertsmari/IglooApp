@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import {useEffect, useState} from 'react';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Card from './components/Apartment';
+
+
+const wrapper = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "48px",
+  margin: "30px 10vw",
+}
 
 function App() {
+  const [ apartments, setApartments ] = useState([]);
+  useEffect(()=>{
+    const getData = async ()=>{
+      const r = await fetch("https://api-rent.myigloo.is/api/2019-10/listings/");
+      const json = await r.json();
+      console.log(json.items);
+      setApartments(json.items);
+    }
+    getData();
+  },[]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header/>
+      <div style={wrapper}>
+        {apartments.map((apartment,id)=>{
+          console.log(apartment.id);
+          return (
+            <Card data={apartment}/>
+          )
+        })}
+      </div>
+      <Footer/>
+    </>
   );
 }
 
